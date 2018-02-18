@@ -1,6 +1,7 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
+#define CODE_ADDRESS_BASE 100
 enum boolean {FALSE, TRUE};
 
 /*function to check what value has the command,
