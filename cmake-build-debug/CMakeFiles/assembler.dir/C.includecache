@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/Marina/CLionProjects/assembler/common.h
+
+C:/Users/Marina/CLionProjects/assembler/main.c
+stdio.h
+-
+stdarg.h
+-
+stdlib.h
+-
+mem.h
+-
+common.h
+C:/Users/Marina/CLionProjects/assembler/common.h
+
+C:/Users/Marina/CLionProjects/assembler/utils.c
+stdio.h
+-
+mem.h
+-
+malloc.h
+-
+common.h
+C:/Users/Marina/CLionProjects/assembler/common.h
+
