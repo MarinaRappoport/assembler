@@ -3,6 +3,7 @@
 
 #define CODE_ADDRESS_BASE 100
 enum boolean {FALSE, TRUE};
+enum result {SUCCESS, ERROR};
 
 /*function to check what value has the command,
  if command not found return -1*/

@@ -199,10 +199,10 @@ void is_label_valid(char *buf, int size) {
 4. if .extern - add to symbol table (name, isExtern-true)
 5. if label (check if vabel valid) - ends with : - put to the symbol table (name, address - IC|DC, isExterm, isMethod);
     - if entry/extern - ignore label
-    - if data/ struct/ string - add to symbol table + count DC
+    - if data/ struct/ string - add to symbol table + count DC + save binary
     - if command - add to symbol table + count IC
 6. Without label:
-- if data/ struct/ string - add to symbol table + count DC
+- if data/ struct/ string - add to symbol table + count DC + save binary
 - if command - add to symbol table + count IC
 */
 
@@ -233,14 +233,11 @@ void is_label_valid(char *buf, int size) {
     for variables - check in symbol table:
                 1) if extern: 00000000-01
                 + to file .ext: name(label) + address=IC - of method it uses(in base 32)
-                2)
-
-
 */
 
 /*object file:
 1) size of code =(IC-100) size of data=(DC-IC) - in base 32
-2) all mathods: address - value - in base 32
+2) all methods: address - value - in base 32
 3) all data: address - value - in base 32
 }
 
