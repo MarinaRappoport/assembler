@@ -8,23 +8,23 @@
 #define BASE_32 32;
 const char encoding_strange_32[]= "!@#$%^&*<>abcdefghijklmnopqrstuv";
 
-/*function to convert decimal to binary*/
-long dec_to_binary(int n) {
-    int remainder;
-    long binary = 0, i = 1;
-
-    while (n != 0) {
-        remainder = n % 2;
-        n = n / 2;
-        binary = binary + (remainder * i);
-        i = i * 10;
+/*function to convert positive and negative decimal to binary:
+ * n - number to convert
+ * bits_number - how many bits we could use (first bit needs for sign)
+ */
+int dec_to_binary(int n, int bits_number) {
+    int mask = (1 << (bits_number - 1));
+    int result = 0;
+    while (mask != 0) {
+        result = result * 10 + ((n & mask) != 0);
+        mask >>= 1;
     }
-    return binary;
+    return result;
 }
 
 /*function to check what value has the command,
  if command not found return -1*/
-int commans_lookup(const char *name) {
+int commands_lookup(const char *name) {
     typedef struct command {
         const char *name;
         int value;

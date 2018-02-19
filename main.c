@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
                     if (i > 0) {
                         pos = COMMAND;
                         buf[i] = '\0'; /*end of string*/
-                        if (commans_lookup(buf) == -1) {
+                        if (commands_lookup(buf) == -1) {
                             /*error - unknown command*/
                         } else {
                             /*TODO count the place for the command*/

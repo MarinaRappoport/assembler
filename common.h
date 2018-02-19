@@ -6,7 +6,7 @@ enum boolean {FALSE, TRUE};
 
 /*function to check what value has the command,
  if command not found return -1*/
-int commans_lookup(const char *name);
+int commands_lookup(const char *name);
 
 /*register r1-8*/
 
