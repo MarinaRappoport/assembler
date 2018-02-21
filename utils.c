@@ -22,40 +22,6 @@ int dec_to_binary(int n, int bits_number) {
     return result;
 }
 
-/*function to check what value has the command,
- if command not found return -1*/
-int commands_lookup(const char *name) {
-    typedef struct command {
-        const char *name;
-        int value;
-    } Command;
-    Command *p;
-    Command table[] = {
-            {"mov",  0},
-            {"cmp",  1},
-            {"add",  2},
-            {"sub",  3},
-            {"not",  4},
-            {"clr",  5},
-            {"lea",  6},
-            {"inc",  7},
-            {"dec",  8},
-            {"jmp",  9},
-            {"bne",  10},
-            {"red",  11},
-            {"prn",  12},
-            {"jsr",  13},
-            {"rts",  14},
-            {"stop", 15}
-    };
-    for (p = table; p->name != NULL; ++p) {
-        if (strcmp(p->name, name) == 0) {
-            return p->value;
-        }
-    }
-    return -1;
-}
-
 /*function encode decimal to base 32*/
 char *dec_to_base32(int n) {
     /*array to store base_32 numbers in reverse order*/

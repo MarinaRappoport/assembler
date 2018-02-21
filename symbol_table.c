@@ -1,5 +1,6 @@
 #include <mem.h>
 #include <malloc.h>
+#include <stdio.h>
 
 #include "symbol_table.h"
 
@@ -24,5 +25,34 @@ void add_to_symbol_table(Symbol **head, char *name, int address, int is_extern, 
     /*add first*/
     (*head) = new;
     new->next = (*head)->next;
+}
+
+/*update DC according to IC offset - for all symbols that are NOT method (and not extern):
+    address += IC */
+void update_data_address(Symbol **head, int offset) {
+    Symbol *pnt = (*head);
+    while (pnt)
+    {
+        /*Check if the label is data and not external*/
+        if(!pnt->is_method && !pnt->is_extern)
+        {
+            pnt->address += offset;
+        }
+        pnt=pnt->next;
+    }
+}
+
+/*go over symbol table to find the symbol ny label name*/
+Symbol* find_symbol(Symbol **head, char *name) {
+    Symbol *pnt = (*head);
+    while (pnt)
+    {
+        if(strcmp(pnt->name, name) == 0)
+        {
+            return pnt;
+        }
+    }
+    printf (stderr, "Error: can not find label %s ", name);
+    return NULL;
 }
 
