@@ -7,21 +7,16 @@
 #define COMMA_DELIM ","
 #define CODE_ADDRESS_BASE 100
 enum boolean {FALSE, TRUE};
-
-/*function to check what value has the command,
- if command not found return -1*/
-int commands_lookup(const char *name);
+#define NOT_FOUND -1
 
 /*register r1-8*/
 
-/*max size of the line - 80 - not include \n*/
-
-/*guidelines
-#define EXTERNAL "external"
+/*guidelines*/
+#define EXTERN "external"
 #define ENTRY "entry"
 #define DATA "data"
 #define STRING "string"
-#define STRUCT "struct"*/
+#define STRUCT "struct"
 
 #endif
 

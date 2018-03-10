@@ -1,7 +1,6 @@
 #ifndef ASSEMBLER_FIRST_SCAN_H
 #define ASSEMBLER_FIRST_SCAN_H
 
-
 #include <stdio.h>
 
 /*how to count memory for command:
@@ -29,16 +28,16 @@ for number ???? (maximum number? minus?) +1
 2. if comment (start with ;) - ignore
 3. if .entry - ignore
 4. if .extern - add to symbol table (name, isExtern-true)
-5. if label (check if vabel valid) - ends with : - put to the symbol table (name, address - IC|DC, isExterm, isMethod);
+5. if label (check if label valid) - ends with : - put to the symbol table (name, address - IC|DC, isExterm, isMethod);
     - if entry/extern - ignore label
     - if data/ struct/ string - add to symbol table + count DC + save binary
     - if command - add to symbol table + count IC
 6. Without label:
-- if data/ struct/ string - add to symbol table + count DC + save binary
-- if command - add to symbol table + count IC
+- if data/ struct/ string - count DC + save binary
+- if command - count IC
 
 in case of error return 1, if no errors - 0*/
-int first_scan(FILE *fp, int *IC);
+int first_scan(FILE *fp, int *IC, int *DC);
 
 /*second scan of the file
 1. if empty string - ignore

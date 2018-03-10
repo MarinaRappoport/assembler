@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 #include <stdlib.h> /*for malloc*/
-#include <mem.h>
 #include "common.h"
 #include "symbol_table.h"
 #include "file_scan.h"
@@ -12,21 +11,14 @@
 #define AS_EXT ".as"
 
 /*structures and global variables*/
-enum position {
-    NEW_LINE, GUIDELINE, COMMAND, EXTERN
-};
+//enum position {
+//    NEW_LINE, GUIDELINE, COMMAND, EXTERN
+//};
 
 int IC = CODE_ADDRESS_BASE; /*instruction counter*/
 int DC = 0; /*data counter*/
 
 /*function prototypes*/
-
-
-
-
-int main1(int argc, char *argv[]) {
-
-}
 
 int main(int argc, char *argv[]) {
     /*read arguments from command line*/
@@ -57,8 +49,8 @@ int main(int argc, char *argv[]) {
 
     int c;
     int i = 0; /*to count current buffer size*/
-    enum position pos = NEW_LINE;
-    Symbol *head = NULL; /*pointer to symbol table*/
+//    enum position pos = NEW_LINE;
+
     /*TODO add ext to file name */
     FILE *fp = fopen("C:\\Users\\Marina\\Desktop\\uni\\C\\_maman14\\ps.as", "r");
     if (!fp) {
@@ -67,10 +59,10 @@ int main(int argc, char *argv[]) {
     }
 
     /*if first scan finished without error*/
-    if (first_scan(fp, &IC) == 0) {
+    if (first_scan(fp, &IC, &DC) == 0) {
 
         /*update address for all data labels - add IC offset*/
-        update_data_address(&head, IC);
+        update_data_address(IC);
 
         /*the file position to the beginning*/
         rewind(fp);
