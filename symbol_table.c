@@ -22,10 +22,12 @@ struct symbol {
 void add_to_symbol_table(char *name, int address, int is_extern, int is_method) {
     Symbol *pnt;
     Symbol *new = (Symbol *) malloc(sizeof(Symbol));
+    new->name = (char *) malloc(strlen(name)+1);
     strcpy(new->name, name);
     new->address = address;
     new->is_method = is_method;
     new->is_extern = is_extern;
+    new->next = NULL;
 
     if(head == NULL){
         head = new;     /*when linked list is empty*/

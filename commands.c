@@ -52,14 +52,14 @@ operand_type parse_operand_type(char *operand) {
     char label[MAX_LABEL_SIZE];
     /* immediate value - '#' and number */
     if (sscanf(operand, "#%d", &num) == 1) return IMMEDIATE;
-        /* direct(variable) - label name */
-    else if (sscanf(operand, "%30[a-zA-Z0-9]", label) == 1) return DIRECT;
-        /* struct - label.1 or label.2*/
-    else if (sscanf(operand, "%30[a-zA-Z0-9].%d", label, &index) == 2 && (index == 1 || index == 2)) return STRUCTURE;
         /*register r0-r7*/
     else if (strlen(operand) == 2 && *operand == REGISTER_PREFIX
              && isdigit(operand[1]) && (operand[1]) >= '0' && (operand[1]) <= REGISTER_MAX)
         return REGISTER;
+        /* struct - label.1 or label.2*/
+    else if (sscanf(operand, "%30[a-zA-Z0-9].%d", label, &index) == 2 && (index == 1 || index == 2)) return STRUCTURE;
+        /* direct(variable) - label name */
+    else if (sscanf(operand, "%30[a-zA-Z0-9]", label) == 1) return DIRECT;
         /*not found*/
     else return ERROR;
 }
@@ -67,7 +67,7 @@ operand_type parse_operand_type(char *operand) {
 /* Calculate memory (in rows) - IC offset - for the command*/
 int calculate_command_offset(char *src_op, char *dst_op, int row_num) {
     int src_offset = 0, dst_offset = 0;
-    operand_type src_type = NULL, dst_type;
+    operand_type src_type = ERROR, dst_type;
 
     /*source operand*/
     if (src_op != NULL) {

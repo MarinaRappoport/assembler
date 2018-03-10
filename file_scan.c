@@ -14,6 +14,7 @@ int has_label = 0;
 #define BUFF_SIZE 80
 #define COMMENT_START ';'
 #define GUIDELINE_START '.'
+#define LABEL_END ':'
 char buf[BUFF_SIZE];
 int row_number = 1;
 
@@ -37,7 +38,7 @@ void remove_spaces(char *s) {
 int count_IC(int *IC, char *token, int operands_num) {
     int is_error = FALSE, command_offset;
     char *src_op, *dst_op;
-    remove_spaces(token); /*TODO fix the method to trim!*/
+    if(token)remove_spaces(token); /*TODO fix the method to trim!*/
     if (operands_num == 0 && (!token || is_empty(token))) { (*IC)++; }
     else if (operands_num == 1 && (token && !is_empty(token))) {
         command_offset = calculate_command_offset(NULL, token, row_number);
@@ -104,19 +105,23 @@ int first_scan(FILE *fp, int *IC, int *DC) {
         /*take the first token*/
         token = strtok(row, SPACE_DELIM);
         /*if label*/
-        if (token[strlen(token) - 1] == ':') {
-            if (is_label_valid(token)) {
+        if (token[strlen(token) - 1] == LABEL_END) {
+            if (strlen(token) > (MAX_LABEL_SIZE + 1)) {
+                printf("Length of label should be less or equal %d, row: %d", MAX_LABEL_SIZE, row_number);
+                return FALSE;
+            } else {
                 /*remove ':' from the end*/
                 strncpy(label, token, strlen(token) - 1);
                 label[strlen(token) - 1] = '\0';
-
-                /*take the next element of the row */
-                token = strtok(NULL, SPACE_DELIM);
-                /*if the token is null or empty - error*/
-                if (!token || is_empty(token)) {
-                    is_error = TRUE;
-                    fprintf(stderr, "Label can't be alone in line, row: %d\n", row_number);
-                    continue;
+                if (is_label_valid(label)) {
+                    /*take the next element of the row */
+                    token = strtok(NULL, SPACE_DELIM);
+                    /*if the token is null or empty - error*/
+                    if (!token || is_empty(token)) {
+                        is_error = TRUE;
+                        fprintf(stderr, "Label can't be alone in line, row: %d\n", row_number);
+                        continue;
+                    }
                 }
             }
         }
@@ -288,10 +293,6 @@ int first_scan(FILE *fp, int *IC, int *DC) {
 //            }
 //        }*/
 
-}
-
-}
-
 /*second scan of the file
 1. if empty string - ignore
 2. if comment (start with ;) - ignore
@@ -325,22 +326,28 @@ int second_scan(FILE *fp) {
 /*check is the label valid: start with letter, contains only number and letters*/
 int is_label_valid(char *token) {
     /*should start with letter, contains only letters(65-90,97-122) or digits(48-57), length not more that 30*/
-    int i = 0;
-    int c = buf[i];
-    if (strlen(token) > (MAX_LABEL_SIZE + 1))
-        printf("Length of label should be less or equal %d, row: %d", MAX_LABEL_SIZE, row_number);
-    if (!(c >= 65 && c <= 90) && !(c >= 97 && c <= 122)) {
-        printf(stderr, "Label should start with letter, row: %d", row_number);
+    char *c = token;
+    if (!strlen(token)) {
+        printf("Label can't be empty, row: %d", row_number);
+        return FALSE;
     }
-    while (i++ < MAX_LABEL_SIZE) {
-        if (!(c >= 65 && c <= 90) && !(c >= 97 && c <= 122) && !(c >= 48 && c <= 57)) {
-            printf(stderr, "Label should contain only letters and numbers, row: %d", row_number);
+    if (!(*c >= 65 && *c <= 90) && !(*c >= 97 && *c <= 122)) {
+        fprintf(stderr, "Label should start with letter, row: %d", row_number);
+        return FALSE;
+    }
+    while (*c) {
+        if (!(*c >= 65 && *c <= 90) && !(*c >= 97 && *c <= 122) && !(*c >= 48 && *c <= 57)) {
+            fprintf(stderr, "Label should contain only letters and numbers, row: %d", row_number);
+            return FALSE;
         }
+        c++;
     }
     //TODO check reserved words
     if (0) {
         printf("Can not use reserved word for label, row: %d", row_number);
+        return FALSE;
     }
+    return TRUE;
 }
 
 /*check if the string contains only spaces or tabs*/
@@ -359,11 +366,11 @@ int is_label_valid_old(char *buf, int size) {
     int c = buf[i];
     if (size > 30) printf("Length of label should be less or equal 30");
     if (!(c >= 65 && c <= 90) && !(c >= 97 && c <= 122)) {
-        printf(stderr, "Label should start with letter");
+        fprintf(stderr, "Label should start with letter");
     }
     while (i++ < size) {
         if (!(c >= 65 && c <= 90) && !(c >= 97 && c <= 122) && !(c >= 48 && c <= 57)) {
-            printf(stderr, "Label should contain only letters and numbers");
+            fprintf(stderr, "Label should contain only letters and numbers");
         }
     }
     //TODO check reserved words

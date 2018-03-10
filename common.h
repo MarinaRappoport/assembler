@@ -12,7 +12,7 @@ enum boolean {FALSE, TRUE};
 /*register r1-8*/
 
 /*guidelines*/
-#define EXTERN "external"
+#define EXTERN "extern"
 #define ENTRY "entry"
 #define DATA "data"
 #define STRING "string"
