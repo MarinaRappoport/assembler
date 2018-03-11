@@ -6,12 +6,6 @@
 #include "common.h"
 #include "commands.h"
 
-#define IMMEDIATE_MAX 127
-#define IMMEDIATE_MIN -128
-#define REGISTER_PREFIX 'r'
-#define REGISTER_MAX '7'
-
-
 Command command_table[] = {
         {"mov",  0,  2},
         {"cmp",  1,  2},
@@ -30,20 +24,6 @@ Command command_table[] = {
         {"rts",  14},
         {"stop", 15}
 };
-
-/* type of operand address */
-typedef enum {
-    IMMEDIATE,
-    DIRECT, /*variable, label*/
-    STRUCTURE,
-    REGISTER,
-    ERROR = -1
-} operand_type;
-
-/* type of encoding*/
-typedef enum {
-    ABSOLUTE, EXTERNAL, RELOCATABLE
-} encoding_type;
 
 /* function to check what type of operand is that*/
 operand_type parse_operand_type(char *operand) {

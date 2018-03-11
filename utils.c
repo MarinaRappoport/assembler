@@ -1,9 +1,20 @@
 #include<stdio.h>
 #include <mem.h>
 #include <malloc.h>
+#include <ctype.h>
 #include "common.h"
 
-/*File contains different utils for conversion*/
+/*File contains parse and conversion utils*/
+
+/*check if the string contains only spaces or tabs*/
+int is_empty(const char *s) {
+    while (*s != '\0') {
+        if (!isspace((unsigned char) *s))
+            return 0;
+        s++;
+    }
+    return 1;
+}
 
 #define BASE_32 32;
 const char encoding_strange_32[]= "!@#$%^&*<>abcdefghijklmnopqrstuv";

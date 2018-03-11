@@ -15,8 +15,8 @@
 //    NEW_LINE, GUIDELINE, COMMAND, EXTERN
 //};
 
-int IC = CODE_ADDRESS_BASE; /*instruction counter*/
-int DC = 0; /*data counter*/
+int IC; /*instruction counter*/
+int DC; /*data counter*/
 
 /*function prototypes*/
 
@@ -57,6 +57,10 @@ int main(int argc, char *argv[]) {
         printf("File not found!");
         exit(0);
     }
+
+    /*reset counters*/
+    IC = CODE_ADDRESS_BASE;
+    DC = 0;
 
     /*if first scan finished without error*/
     if (first_scan(fp, &IC, &DC) == 0) {

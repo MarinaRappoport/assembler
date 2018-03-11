@@ -7,40 +7,109 @@
 #include "symbol_table.h"
 #include "commands.h"
 #include "data_block.h"
+#include "utils.h"
 
 #define MAX_ROW_LENGTH 81 /* 80 + 1 for \n*/
 char label[MAX_LABEL_SIZE];
-int has_label = 0;
-#define BUFF_SIZE 80
+//int has_label = 0;
+//#define BUFF_SIZE 80
+//char buf[BUFF_SIZE];
 #define COMMENT_START ';'
 #define GUIDELINE_START '.'
 #define LABEL_END ':'
-char buf[BUFF_SIZE];
-int row_number = 1;
+int row_number = 0;
 
 int is_label_valid(char *token);
 
-/*check if the string contains only spaces or tabs*/
-int is_empty(const char *s);
-
-/*remove all whitespaces from the string*/
-void remove_spaces(char *s) {
+/*replace tabs by spaces*/
+void replace_tabs_by_spaces(char *s) {
     char *i = s;
-    char *j = s;
-    while (*j != 0) {
-        *i = *j++;
-        if (!isspace((unsigned char) *i)) i++;
+    while (*i != 0) {
+        if (*i=='\t') *i=' ';
+        i++;
     }
-    *i = '\0';
+}
+
+/*parse and handle guideline - entry, extern, string, data, struct
+ in case of error - return 1, if no errors - 0*/
+int handle_guideline(int *DC, char *token) {
+    int is_error = FALSE;
+    token++; /*skip '.'*/
+    if (strcmp(token, ENTRY) == 0) { /*ignore*/
+        if (strlen(label)) fprintf(stderr, "Warning: ignore label before ENTRY, row %d", row_number);
+    } else if (strcmp(token, EXTERN) == 0) {
+        if (strlen(label)) fprintf(stderr, "Warning: ignore label before EXTERN, row %d", row_number);
+        token = strtok(NULL, SPACE_DELIM);
+        if (is_label_valid(token)) {
+            add_to_symbol_table(token, 0, TRUE, FALSE);
+        } else {
+            printf("Invalid EXTERN label, row %d\n", row_number);
+            is_error = TRUE;
+        }
+        token = strtok(NULL, SPACE_DELIM);
+        if (token && !is_empty(token)) {
+            printf("Additional data after EXTERN label, row %d\n", row_number);
+            is_error = TRUE;
+        }
+    } else if (strcmp(token, STRING) == 0) {
+        /*take rest*/
+        token = strtok(NULL, "");
+        if (!token || add_string_to_memory(token, DC)) {
+            is_error = TRUE;
+            fprintf(stderr, "Failed to insert string to memory - %s, row number - %d \n", token, row_number);
+        } else {
+            /*if label not empty - add to symbol table*/
+            if (strlen(label)) add_to_symbol_table(label, *DC, FALSE, FALSE);
+        }
+    } else if (strcmp(token, DATA) == 0) {
+        /*if label not empty - add to symbol table*/
+        if (strlen(label)) add_to_symbol_table(label, *DC, FALSE, FALSE);
+        /* split all the numbers by ','*/
+        token = strtok(NULL, COMMA_DELIM);
+        /* go over the numbers and add them to the data memory block */
+        while (token && !is_empty(token)) {
+            /* add them to the memory data section */
+            if (!add_int_to_data_memory(token, DC)) {
+                /* Get the next number */
+                token = strtok(NULL, COMMA_DELIM);
+            } else {
+                /* In case there is an error in the memory insert */
+                is_error = TRUE;
+                fprintf(stderr, "Invalid data, row %d  \n", row_number);
+                break;
+            }
+        }
+    } else if (strcmp(token, STRUCT) == 0) {
+        /*if label not empty - add to symbol table*/
+        if (strlen(label)) add_to_symbol_table(label, *DC, FALSE, FALSE);
+        /* get the number part*/
+        token = strtok(NULL, COMMA_DELIM);
+        if (!token || add_int_to_data_memory(token, DC)) {
+            /* In case there is an error in the memory insert */
+            is_error = TRUE;
+            fprintf(stderr, "Invalid number part of struct, row %d \n", row_number);
+        } else {
+            /* get the string part*/
+            token = strtok(NULL, COMMA_DELIM);
+            if (!token || add_string_to_memory(token, DC)) {
+                is_error = TRUE;
+                fprintf(stderr, "Invalid string part of struct, row %d \n", row_number);
+            }
+        }
+    } else {
+        printf("Invalid guideline, row %d\n", row_number);
+        is_error = TRUE;
+    }
+    return is_error;
 }
 
 /*count IC analysing operands of the command*/
 int count_IC(int *IC, char *token, int operands_num) {
     int is_error = FALSE, command_offset;
     char *src_op, *dst_op;
-    if(token)remove_spaces(token); /*TODO fix the method to trim!*/
     if (operands_num == 0 && (!token || is_empty(token))) { (*IC)++; }
     else if (operands_num == 1 && (token && !is_empty(token))) {
+        token = strtok(token, SPACE_DELIM); /*trim spaces*/
         command_offset = calculate_command_offset(NULL, token, row_number);
         if (command_offset == NOT_FOUND) is_error = TRUE;
         else (*IC) += command_offset;
@@ -53,6 +122,8 @@ int count_IC(int *IC, char *token, int operands_num) {
             is_error = TRUE;
             fprintf(stderr, "Wrong number of operands, row: %d\n", row_number);
         } else {
+            src_op = strtok(src_op, SPACE_DELIM); /*trim spaces*/
+            dst_op = strtok(dst_op, SPACE_DELIM);
             command_offset = calculate_command_offset(src_op, dst_op, row_number);
             if (command_offset == NOT_FOUND) is_error = TRUE;
             else (*IC) += command_offset;
@@ -65,24 +136,14 @@ int count_IC(int *IC, char *token, int operands_num) {
 }
 
 /*first scan of the file
-3. if .entry - ignore
-4. if .extern - add to symbol table (name, isExtern-true)
-5. if label (check if label valid) - ends with : - put to the symbol table (name, address - IC|DC, isExterm, isMethod);
-    - if entry/extern - ignore label
-    - if data/ struct/ string - add to symbol table + count DC + save binary
-6. Without label:
-- if data/ struct/ string - count DC + save binary
-
+handle labels, count DC for guidelines and IC for commands
 in case of error return 1, if no errors - 0*/
 int first_scan(FILE *fp, int *IC, int *DC) {
     int is_error = FALSE;
     char *row;
     char *token; /*to get part of the row split by space*/
     Command command;
-//    char *row_pnt;
-
     row = (char *) malloc(MAX_ROW_LENGTH);
-//    token = (char *) malloc(MAX_ROW_LENGTH);
 
     if (!row) {
         fprintf(stderr, "Can not allocate memory for row: %d \n", row_number);
@@ -91,16 +152,19 @@ int first_scan(FILE *fp, int *IC, int *DC) {
 
     /*read line by line*/
     while (fgets(row, MAX_ROW_LENGTH, fp) != NULL) {
+        row_number++;
         /*clear label*/
         memset(label, '\0', sizeof(label));
 
+        replace_tabs_by_spaces(row);
+
         /* skip spaces in the beginning*/
-        while (*row == SPACE_DELIM[0] || *row == '\t') row++;
+        while (*row == SPACE_DELIM[0]) row++;
         /*if empty string or if comment (start with ;) - ignore*/
         if (*row == COMMENT_START || *row == '\n') continue;
 
         /*replace end of line*/
-        row[strlen(row) - 1] = '\0';
+        if (row[strlen(row)-1]=='\n') row[strlen(row) - 1] = '\0';
 
         /*take the first token*/
         token = strtok(row, SPACE_DELIM);
@@ -125,63 +189,9 @@ int first_scan(FILE *fp, int *IC, int *DC) {
                 }
             }
         }
-
-        /*TODO - separate method fot guideline*/
         /*if guideline - starts with "."*/
         if (*token == GUIDELINE_START) {
-            token++; /*skip '.'*/
-            if (strcmp(token, ENTRY) == 0) { /*ignore*/
-                if (strlen(label)) fprintf(stderr, "Warning: ignore label before ENTRY, row %d", row_number);
-            } else if (strcmp(token, EXTERN) == 0) {
-                if (strlen(label)) fprintf(stderr, "Warning: ignore label before EXTERN, row %d", row_number);
-                token = strtok(NULL, SPACE_DELIM);
-                if (is_label_valid(token)) {
-                    add_to_symbol_table(token, 0, TRUE, FALSE);
-                } else {
-                    printf("Invalid EXTERN label, row %d\n", row_number);
-                    is_error = TRUE;
-                }
-                token = strtok(NULL, SPACE_DELIM);
-                if (token && !is_empty(token)) {
-                    printf("Additional data after EXTERN label, row %d\n", row_number);
-                    is_error = TRUE;
-                }
-            } else if (strcmp(token, STRING) == 0) {
-                /*take rest*/
-                token = strtok(NULL, "");
-                if (add_string_to_memory(token, DC)) {
-                    is_error = TRUE;
-                    fprintf(stderr, "Failed to insert string to memory - %s, row number - %d \n", token, row_number);
-                } else {
-                    /*if label not empty - add to symbol table*/
-                    if (strlen(label)) add_to_symbol_table(label, *DC, FALSE, FALSE);
-                }
-            } else if (strcmp(token, DATA) == 0) {
-                /*if label not empty - add to symbol table*/
-                if (strlen(label)) add_to_symbol_table(label, *DC, FALSE, FALSE);
-                /* split all the numbers by ','*/
-                token = strtok(NULL, COMMA_DELIM);
-                /* go over the numbers and add them to the data memory block */
-                while (token && !is_empty(token)) {
-                    /* add them to the memory data section */
-                    if (add_int_to_data_memory(token, DC)) {
-                        /* Get the next number */
-                        token = strtok(NULL, COMMA_DELIM);
-                    } else {
-                        /* In case there is an error in the memory insert */
-                        is_error = TRUE;
-                        fprintf(stderr, "Invalid data, row %d  \n", row_number);
-                        break;
-                    }
-                }
-            } else if (strcmp(token, STRUCT) == 0) {
-                /*if label not empty - add to symbol table*/
-                if (strlen(label)) add_to_symbol_table(label, *DC, FALSE, FALSE);
-                /*TODO structure*/
-            } else {
-                printf("Invalid guideline, row %d\n", row_number);
-                is_error = TRUE;
-            }
+            is_error = handle_guideline(DC, token);
         }
             /*if command*/
         else {
@@ -198,7 +208,6 @@ int first_scan(FILE *fp, int *IC, int *DC) {
 
             is_error = count_IC(IC, token, command.operands_num);
         }
-        row_number++;
     }
     return is_error;
 }
@@ -348,16 +357,6 @@ int is_label_valid(char *token) {
         return FALSE;
     }
     return TRUE;
-}
-
-/*check if the string contains only spaces or tabs*/
-int is_empty(const char *s) {
-    while (*s != '\0') {
-        if (!isspace((unsigned char) *s))
-            return 0;
-        s++;
-    }
-    return 1;
 }
 
 int is_label_valid_old(char *buf, int size) {

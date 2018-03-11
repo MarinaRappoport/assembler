@@ -5,9 +5,8 @@
 #define MAX_LABEL_SIZE 30
 #define SPACE_DELIM " "
 #define COMMA_DELIM ","
-#define CODE_ADDRESS_BASE 100
 enum boolean {FALSE, TRUE};
-#define NOT_FOUND -1
+#define NOT_FOUND (-1)
 
 /*register r1-8*/
 
