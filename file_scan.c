@@ -25,7 +25,7 @@ int is_label_valid(char *token);
 void replace_tabs_by_spaces(char *s) {
     char *i = s;
     while (*i != 0) {
-        if (*i=='\t') *i=' ';
+        if (*i == '\t') *i = ' ';
         i++;
     }
 }
@@ -140,13 +140,12 @@ handle labels, count DC for guidelines and IC for commands
 in case of error return 1, if no errors - 0*/
 int first_scan(FILE *fp, int *IC, int *DC) {
     int is_error = FALSE;
-    char *row;
+    char *row; /*to read one row*/
     char *token; /*to get part of the row split by space*/
     Command command;
     row = (char *) malloc(MAX_ROW_LENGTH);
-
     if (!row) {
-        fprintf(stderr, "Can not allocate memory for row: %d \n", row_number);
+        fprintf(stderr, "Can not allocate memory for row: %d \n", ++row_number);
         exit(1);
     }
 
@@ -164,7 +163,7 @@ int first_scan(FILE *fp, int *IC, int *DC) {
         if (*row == COMMENT_START || *row == '\n') continue;
 
         /*replace end of line*/
-        if (row[strlen(row)-1]=='\n') row[strlen(row) - 1] = '\0';
+        if (row[strlen(row) - 1] == '\n') row[strlen(row) - 1] = '\0';
 
         /*take the first token*/
         token = strtok(row, SPACE_DELIM);
@@ -209,6 +208,7 @@ int first_scan(FILE *fp, int *IC, int *DC) {
             is_error = count_IC(IC, token, command.operands_num);
         }
     }
+    free(row);
     return is_error;
 }
 
@@ -328,7 +328,64 @@ int first_scan(FILE *fp, int *IC, int *DC) {
 
 in case of error return 1, if no errors - 0*/
 int second_scan(FILE *fp) {
+    machine_command machine_rowm, empty = {0}; /* to reset all values*/
+    Symbol *sym;
+    int is_error = FALSE;
+    char *row; /*to read one row*/
+    char *token; /*to get part of the row split by space*/
+    Command command;
+    row_number = 0;
+    row = (char *) malloc(MAX_ROW_LENGTH);
+    if (!row) {
+        fprintf(stderr, "Can not allocate memory for row: %d \n", ++row_number);
+        exit(1);
+    }
 
+    /*read line by line*/
+    while (fgets(row, MAX_ROW_LENGTH, fp) != NULL) {
+        row_number++;
+        replace_tabs_by_spaces(row);
+
+        /* skip spaces in the beginning*/
+        while (*row == SPACE_DELIM[0]) row++;
+        /*if empty string or if comment (start with ;) - ignore*/
+        if (*row == COMMENT_START || *row == '\n') continue;
+
+        /*replace end of line*/
+        if (row[strlen(row) - 1] == '\n') row[strlen(row) - 1] = '\0';
+
+        /*take the first token*/
+        token = strtok(row, SPACE_DELIM);
+
+        /* nothing to do with label - get next element*/
+        if (token[strlen(token) - 1] == LABEL_END) token = strtok(NULL, SPACE_DELIM);
+        /*if guideline - starts with "."*/
+        if (*token == GUIDELINE_START) {
+            if (strcmp(token, ENTRY) == 0) {
+                /*find in symbol table*/
+                token = strtok(row, SPACE_DELIM);
+                sym = find_symbol(token);
+                if (!sym) {
+                    fprintf(stderr, "The label \"%s\" was not declared, row %d \n", token, row_number);
+                    is_error = TRUE;
+                    continue;
+                }
+
+
+            } else if (strcmp(token, ENTRY) == 0) {
+
+            } else if (strcmp(token, ENTRY) == 0) {
+
+            } else if (strcmp(token, ENTRY) == 0) {
+
+            } else if (strcmp(token, ENTRY) == 0) {
+
+            }
+        }
+
+    }
+
+    return is_error;
 }
 
 
