@@ -1,9 +1,10 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/assembler.dir/main.c.obj"
+  "CMakeFiles/assembler.dir/assembler.c.obj"
   "CMakeFiles/assembler.dir/utils.c.obj"
   "CMakeFiles/assembler.dir/symbol_table.c.obj"
-  "CMakeFiles/assembler.dir/first_scan.c.obj"
-  "CMakeFiles/assembler.dir/second_scan.c.obj"
+  "CMakeFiles/assembler.dir/file_scan.c.obj"
+  "CMakeFiles/assembler.dir/data_block.c.obj"
+  "CMakeFiles/assembler.dir/commands.c.obj"
   "assembler.pdb"
   "assembler.exe"
   "assembler.exe.manifest"

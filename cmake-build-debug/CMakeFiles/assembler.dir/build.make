@@ -56,28 +56,28 @@ include CMakeFiles/assembler.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/assembler.dir/flags.make
 
-CMakeFiles/assembler.dir/main.c.obj: CMakeFiles/assembler.dir/flags.make
-CMakeFiles/assembler.dir/main.c.obj: ../main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Marina\CLionProjects\assembler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/assembler.dir/main.c.obj"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\assembler.dir\main.c.obj   -c C:\Users\Marina\CLionProjects\assembler\main.c
+CMakeFiles/assembler.dir/assembler.c.obj: CMakeFiles/assembler.dir/flags.make
+CMakeFiles/assembler.dir/assembler.c.obj: ../assembler.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Marina\CLionProjects\assembler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/assembler.dir/assembler.c.obj"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\assembler.dir\assembler.c.obj   -c C:\Users\Marina\CLionProjects\assembler\assembler.c
 
-CMakeFiles/assembler.dir/main.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/assembler.dir/main.c.i"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Marina\CLionProjects\assembler\main.c > CMakeFiles\assembler.dir\main.c.i
+CMakeFiles/assembler.dir/assembler.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/assembler.dir/assembler.c.i"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Marina\CLionProjects\assembler\assembler.c > CMakeFiles\assembler.dir\assembler.c.i
 
-CMakeFiles/assembler.dir/main.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/assembler.dir/main.c.s"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Marina\CLionProjects\assembler\main.c -o CMakeFiles\assembler.dir\main.c.s
+CMakeFiles/assembler.dir/assembler.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/assembler.dir/assembler.c.s"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Marina\CLionProjects\assembler\assembler.c -o CMakeFiles\assembler.dir\assembler.c.s
 
-CMakeFiles/assembler.dir/main.c.obj.requires:
+CMakeFiles/assembler.dir/assembler.c.obj.requires:
 
-.PHONY : CMakeFiles/assembler.dir/main.c.obj.requires
+.PHONY : CMakeFiles/assembler.dir/assembler.c.obj.requires
 
-CMakeFiles/assembler.dir/main.c.obj.provides: CMakeFiles/assembler.dir/main.c.obj.requires
-	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/main.c.obj.provides.build
-.PHONY : CMakeFiles/assembler.dir/main.c.obj.provides
+CMakeFiles/assembler.dir/assembler.c.obj.provides: CMakeFiles/assembler.dir/assembler.c.obj.requires
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/assembler.c.obj.provides.build
+.PHONY : CMakeFiles/assembler.dir/assembler.c.obj.provides
 
-CMakeFiles/assembler.dir/main.c.obj.provides.build: CMakeFiles/assembler.dir/main.c.obj
+CMakeFiles/assembler.dir/assembler.c.obj.provides.build: CMakeFiles/assembler.dir/assembler.c.obj
 
 
 CMakeFiles/assembler.dir/utils.c.obj: CMakeFiles/assembler.dir/flags.make
@@ -128,75 +128,101 @@ CMakeFiles/assembler.dir/symbol_table.c.obj.provides: CMakeFiles/assembler.dir/s
 CMakeFiles/assembler.dir/symbol_table.c.obj.provides.build: CMakeFiles/assembler.dir/symbol_table.c.obj
 
 
-CMakeFiles/assembler.dir/first_scan.c.obj: CMakeFiles/assembler.dir/flags.make
-CMakeFiles/assembler.dir/first_scan.c.obj: ../first_scan.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Marina\CLionProjects\assembler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/assembler.dir/first_scan.c.obj"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\assembler.dir\first_scan.c.obj   -c C:\Users\Marina\CLionProjects\assembler\first_scan.c
+CMakeFiles/assembler.dir/file_scan.c.obj: CMakeFiles/assembler.dir/flags.make
+CMakeFiles/assembler.dir/file_scan.c.obj: ../file_scan.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Marina\CLionProjects\assembler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/assembler.dir/file_scan.c.obj"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\assembler.dir\file_scan.c.obj   -c C:\Users\Marina\CLionProjects\assembler\file_scan.c
 
-CMakeFiles/assembler.dir/first_scan.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/assembler.dir/first_scan.c.i"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Marina\CLionProjects\assembler\first_scan.c > CMakeFiles\assembler.dir\first_scan.c.i
+CMakeFiles/assembler.dir/file_scan.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/assembler.dir/file_scan.c.i"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Marina\CLionProjects\assembler\file_scan.c > CMakeFiles\assembler.dir\file_scan.c.i
 
-CMakeFiles/assembler.dir/first_scan.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/assembler.dir/first_scan.c.s"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Marina\CLionProjects\assembler\first_scan.c -o CMakeFiles\assembler.dir\first_scan.c.s
+CMakeFiles/assembler.dir/file_scan.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/assembler.dir/file_scan.c.s"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Marina\CLionProjects\assembler\file_scan.c -o CMakeFiles\assembler.dir\file_scan.c.s
 
-CMakeFiles/assembler.dir/first_scan.c.obj.requires:
+CMakeFiles/assembler.dir/file_scan.c.obj.requires:
 
-.PHONY : CMakeFiles/assembler.dir/first_scan.c.obj.requires
+.PHONY : CMakeFiles/assembler.dir/file_scan.c.obj.requires
 
-CMakeFiles/assembler.dir/first_scan.c.obj.provides: CMakeFiles/assembler.dir/first_scan.c.obj.requires
-	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/first_scan.c.obj.provides.build
-.PHONY : CMakeFiles/assembler.dir/first_scan.c.obj.provides
+CMakeFiles/assembler.dir/file_scan.c.obj.provides: CMakeFiles/assembler.dir/file_scan.c.obj.requires
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/file_scan.c.obj.provides.build
+.PHONY : CMakeFiles/assembler.dir/file_scan.c.obj.provides
 
-CMakeFiles/assembler.dir/first_scan.c.obj.provides.build: CMakeFiles/assembler.dir/first_scan.c.obj
+CMakeFiles/assembler.dir/file_scan.c.obj.provides.build: CMakeFiles/assembler.dir/file_scan.c.obj
 
 
-CMakeFiles/assembler.dir/second_scan.c.obj: CMakeFiles/assembler.dir/flags.make
-CMakeFiles/assembler.dir/second_scan.c.obj: ../second_scan.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Marina\CLionProjects\assembler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/assembler.dir/second_scan.c.obj"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\assembler.dir\second_scan.c.obj   -c C:\Users\Marina\CLionProjects\assembler\second_scan.c
+CMakeFiles/assembler.dir/data_block.c.obj: CMakeFiles/assembler.dir/flags.make
+CMakeFiles/assembler.dir/data_block.c.obj: ../data_block.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Marina\CLionProjects\assembler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/assembler.dir/data_block.c.obj"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\assembler.dir\data_block.c.obj   -c C:\Users\Marina\CLionProjects\assembler\data_block.c
 
-CMakeFiles/assembler.dir/second_scan.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/assembler.dir/second_scan.c.i"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Marina\CLionProjects\assembler\second_scan.c > CMakeFiles\assembler.dir\second_scan.c.i
+CMakeFiles/assembler.dir/data_block.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/assembler.dir/data_block.c.i"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Marina\CLionProjects\assembler\data_block.c > CMakeFiles\assembler.dir\data_block.c.i
 
-CMakeFiles/assembler.dir/second_scan.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/assembler.dir/second_scan.c.s"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Marina\CLionProjects\assembler\second_scan.c -o CMakeFiles\assembler.dir\second_scan.c.s
+CMakeFiles/assembler.dir/data_block.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/assembler.dir/data_block.c.s"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Marina\CLionProjects\assembler\data_block.c -o CMakeFiles\assembler.dir\data_block.c.s
 
-CMakeFiles/assembler.dir/second_scan.c.obj.requires:
+CMakeFiles/assembler.dir/data_block.c.obj.requires:
 
-.PHONY : CMakeFiles/assembler.dir/second_scan.c.obj.requires
+.PHONY : CMakeFiles/assembler.dir/data_block.c.obj.requires
 
-CMakeFiles/assembler.dir/second_scan.c.obj.provides: CMakeFiles/assembler.dir/second_scan.c.obj.requires
-	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/second_scan.c.obj.provides.build
-.PHONY : CMakeFiles/assembler.dir/second_scan.c.obj.provides
+CMakeFiles/assembler.dir/data_block.c.obj.provides: CMakeFiles/assembler.dir/data_block.c.obj.requires
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/data_block.c.obj.provides.build
+.PHONY : CMakeFiles/assembler.dir/data_block.c.obj.provides
 
-CMakeFiles/assembler.dir/second_scan.c.obj.provides.build: CMakeFiles/assembler.dir/second_scan.c.obj
+CMakeFiles/assembler.dir/data_block.c.obj.provides.build: CMakeFiles/assembler.dir/data_block.c.obj
+
+
+CMakeFiles/assembler.dir/commands.c.obj: CMakeFiles/assembler.dir/flags.make
+CMakeFiles/assembler.dir/commands.c.obj: ../commands.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Marina\CLionProjects\assembler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/assembler.dir/commands.c.obj"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\assembler.dir\commands.c.obj   -c C:\Users\Marina\CLionProjects\assembler\commands.c
+
+CMakeFiles/assembler.dir/commands.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/assembler.dir/commands.c.i"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Marina\CLionProjects\assembler\commands.c > CMakeFiles\assembler.dir\commands.c.i
+
+CMakeFiles/assembler.dir/commands.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/assembler.dir/commands.c.s"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Marina\CLionProjects\assembler\commands.c -o CMakeFiles\assembler.dir\commands.c.s
+
+CMakeFiles/assembler.dir/commands.c.obj.requires:
+
+.PHONY : CMakeFiles/assembler.dir/commands.c.obj.requires
+
+CMakeFiles/assembler.dir/commands.c.obj.provides: CMakeFiles/assembler.dir/commands.c.obj.requires
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/commands.c.obj.provides.build
+.PHONY : CMakeFiles/assembler.dir/commands.c.obj.provides
+
+CMakeFiles/assembler.dir/commands.c.obj.provides.build: CMakeFiles/assembler.dir/commands.c.obj
 
 
 # Object files for target assembler
 assembler_OBJECTS = \
-"CMakeFiles/assembler.dir/main.c.obj" \
+"CMakeFiles/assembler.dir/assembler.c.obj" \
 "CMakeFiles/assembler.dir/utils.c.obj" \
 "CMakeFiles/assembler.dir/symbol_table.c.obj" \
-"CMakeFiles/assembler.dir/first_scan.c.obj" \
-"CMakeFiles/assembler.dir/second_scan.c.obj"
+"CMakeFiles/assembler.dir/file_scan.c.obj" \
+"CMakeFiles/assembler.dir/data_block.c.obj" \
+"CMakeFiles/assembler.dir/commands.c.obj"
 
 # External object files for target assembler
 assembler_EXTERNAL_OBJECTS =
 
-assembler.exe: CMakeFiles/assembler.dir/main.c.obj
+assembler.exe: CMakeFiles/assembler.dir/assembler.c.obj
 assembler.exe: CMakeFiles/assembler.dir/utils.c.obj
 assembler.exe: CMakeFiles/assembler.dir/symbol_table.c.obj
-assembler.exe: CMakeFiles/assembler.dir/first_scan.c.obj
-assembler.exe: CMakeFiles/assembler.dir/second_scan.c.obj
+assembler.exe: CMakeFiles/assembler.dir/file_scan.c.obj
+assembler.exe: CMakeFiles/assembler.dir/data_block.c.obj
+assembler.exe: CMakeFiles/assembler.dir/commands.c.obj
 assembler.exe: CMakeFiles/assembler.dir/build.make
 assembler.exe: CMakeFiles/assembler.dir/linklibs.rsp
 assembler.exe: CMakeFiles/assembler.dir/objects1.rsp
 assembler.exe: CMakeFiles/assembler.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Marina\CLionProjects\assembler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking C executable assembler.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Marina\CLionProjects\assembler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking C executable assembler.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\assembler.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -204,11 +230,12 @@ CMakeFiles/assembler.dir/build: assembler.exe
 
 .PHONY : CMakeFiles/assembler.dir/build
 
-CMakeFiles/assembler.dir/requires: CMakeFiles/assembler.dir/main.c.obj.requires
+CMakeFiles/assembler.dir/requires: CMakeFiles/assembler.dir/assembler.c.obj.requires
 CMakeFiles/assembler.dir/requires: CMakeFiles/assembler.dir/utils.c.obj.requires
 CMakeFiles/assembler.dir/requires: CMakeFiles/assembler.dir/symbol_table.c.obj.requires
-CMakeFiles/assembler.dir/requires: CMakeFiles/assembler.dir/first_scan.c.obj.requires
-CMakeFiles/assembler.dir/requires: CMakeFiles/assembler.dir/second_scan.c.obj.requires
+CMakeFiles/assembler.dir/requires: CMakeFiles/assembler.dir/file_scan.c.obj.requires
+CMakeFiles/assembler.dir/requires: CMakeFiles/assembler.dir/data_block.c.obj.requires
+CMakeFiles/assembler.dir/requires: CMakeFiles/assembler.dir/commands.c.obj.requires
 
 .PHONY : CMakeFiles/assembler.dir/requires
 

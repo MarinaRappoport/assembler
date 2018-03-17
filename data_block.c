@@ -4,13 +4,14 @@
 #include "common.h"
 #include "utils.h"
 
+/*File contains methods to handle with data block of code*/
+
 #define MAX_NUM 511        /* maximum number that can represented by 10 bits */
 #define MIN_NUM (-512)    /* minimum number that can represented by 10 bits */
 #define QUOTE '\"'
-#define MEMORY_SIZE 256            /*Size of data table (number of lines)*/
-int memory_block[MEMORY_SIZE];
+int memory_block[MEMORY_SIZE]; /* array to hold machine commands of data(memory) block*/
 
-/*function adds numbers(data) to data block, checks if number valid,
+/*function adds integer to data block, checks if number valid,
  * in case of error return 1, if no errors - 0*/
 int add_int_to_data_memory(char *str_num, int *DC) {
     int is_error = FALSE;
@@ -50,14 +51,14 @@ int add_string_to_memory(char *str, int *DC) {
         /* add letters one by one - until " or no memory space*/
         /*str++ - to skip first " */
         for (str++; *str != QUOTE && *DC < MEMORY_SIZE; str++, (*DC)++) {
-            if (*str == '\0') {
+            if (*str == END_OF_STRING) {
                 is_error = TRUE;
                 fprintf(stderr, "Wrong format of string %s\n", str);
                 return is_error;
             }
             memory_block[*DC] = *str;
         }
-        memory_block[(*DC)++] = '\0';
+        memory_block[(*DC)++] = END_OF_STRING;
 
         /* If no more space in "data encoding array" print the error and return 0(false) */
         if (*DC == MEMORY_SIZE) {
@@ -78,6 +79,13 @@ int add_string_to_memory(char *str, int *DC) {
         fprintf(stderr, "Wrong format of string %s\n", str);
     }
     return is_error;
+}
+
+/*function writes DC address and machine code of data block to object file */
+void write_data_to_object_file(int IC, int DC) {
+    int i;/*index in the memory_block*/
+    for (i = 0; i < DC; ++i)
+        write_to_object_file(IC + i, memory_block[i]);
 }
 
 

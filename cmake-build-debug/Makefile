@@ -122,86 +122,113 @@ assembler/fast:
 	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/build
 .PHONY : assembler/fast
 
-first_scan.obj: first_scan.c.obj
+assembler.obj: assembler.c.obj
 
-.PHONY : first_scan.obj
-
-# target to build an object file
-first_scan.c.obj:
-	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/first_scan.c.obj
-.PHONY : first_scan.c.obj
-
-first_scan.i: first_scan.c.i
-
-.PHONY : first_scan.i
-
-# target to preprocess a source file
-first_scan.c.i:
-	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/first_scan.c.i
-.PHONY : first_scan.c.i
-
-first_scan.s: first_scan.c.s
-
-.PHONY : first_scan.s
-
-# target to generate assembly for a file
-first_scan.c.s:
-	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/first_scan.c.s
-.PHONY : first_scan.c.s
-
-main.obj: main.c.obj
-
-.PHONY : main.obj
+.PHONY : assembler.obj
 
 # target to build an object file
-main.c.obj:
-	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/main.c.obj
-.PHONY : main.c.obj
+assembler.c.obj:
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/assembler.c.obj
+.PHONY : assembler.c.obj
 
-main.i: main.c.i
+assembler.i: assembler.c.i
 
-.PHONY : main.i
+.PHONY : assembler.i
 
 # target to preprocess a source file
-main.c.i:
-	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/main.c.i
-.PHONY : main.c.i
+assembler.c.i:
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/assembler.c.i
+.PHONY : assembler.c.i
 
-main.s: main.c.s
+assembler.s: assembler.c.s
 
-.PHONY : main.s
+.PHONY : assembler.s
 
 # target to generate assembly for a file
-main.c.s:
-	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/main.c.s
-.PHONY : main.c.s
+assembler.c.s:
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/assembler.c.s
+.PHONY : assembler.c.s
 
-second_scan.obj: second_scan.c.obj
+commands.obj: commands.c.obj
 
-.PHONY : second_scan.obj
+.PHONY : commands.obj
 
 # target to build an object file
-second_scan.c.obj:
-	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/second_scan.c.obj
-.PHONY : second_scan.c.obj
+commands.c.obj:
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/commands.c.obj
+.PHONY : commands.c.obj
 
-second_scan.i: second_scan.c.i
+commands.i: commands.c.i
 
-.PHONY : second_scan.i
+.PHONY : commands.i
 
 # target to preprocess a source file
-second_scan.c.i:
-	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/second_scan.c.i
-.PHONY : second_scan.c.i
+commands.c.i:
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/commands.c.i
+.PHONY : commands.c.i
 
-second_scan.s: second_scan.c.s
+commands.s: commands.c.s
 
-.PHONY : second_scan.s
+.PHONY : commands.s
 
 # target to generate assembly for a file
-second_scan.c.s:
-	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/second_scan.c.s
-.PHONY : second_scan.c.s
+commands.c.s:
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/commands.c.s
+.PHONY : commands.c.s
+
+data_block.obj: data_block.c.obj
+
+.PHONY : data_block.obj
+
+# target to build an object file
+data_block.c.obj:
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/data_block.c.obj
+.PHONY : data_block.c.obj
+
+data_block.i: data_block.c.i
+
+.PHONY : data_block.i
+
+# target to preprocess a source file
+data_block.c.i:
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/data_block.c.i
+.PHONY : data_block.c.i
+
+data_block.s: data_block.c.s
+
+.PHONY : data_block.s
+
+# target to generate assembly for a file
+data_block.c.s:
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/data_block.c.s
+.PHONY : data_block.c.s
+
+file_scan.obj: file_scan.c.obj
+
+.PHONY : file_scan.obj
+
+# target to build an object file
+file_scan.c.obj:
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/file_scan.c.obj
+.PHONY : file_scan.c.obj
+
+file_scan.i: file_scan.c.i
+
+.PHONY : file_scan.i
+
+# target to preprocess a source file
+file_scan.c.i:
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/file_scan.c.i
+.PHONY : file_scan.c.i
+
+file_scan.s: file_scan.c.s
+
+.PHONY : file_scan.s
+
+# target to generate assembly for a file
+file_scan.c.s:
+	$(MAKE) -f CMakeFiles\assembler.dir\build.make CMakeFiles/assembler.dir/file_scan.c.s
+.PHONY : file_scan.c.s
 
 symbol_table.obj: symbol_table.c.obj
 
@@ -266,15 +293,18 @@ help:
 	@echo ... assembler
 	@echo ... edit_cache
 	@echo ... rebuild_cache
-	@echo ... first_scan.obj
-	@echo ... first_scan.i
-	@echo ... first_scan.s
-	@echo ... main.obj
-	@echo ... main.i
-	@echo ... main.s
-	@echo ... second_scan.obj
-	@echo ... second_scan.i
-	@echo ... second_scan.s
+	@echo ... assembler.obj
+	@echo ... assembler.i
+	@echo ... assembler.s
+	@echo ... commands.obj
+	@echo ... commands.i
+	@echo ... commands.s
+	@echo ... data_block.obj
+	@echo ... data_block.i
+	@echo ... data_block.s
+	@echo ... file_scan.obj
+	@echo ... file_scan.i
+	@echo ... file_scan.s
 	@echo ... symbol_table.obj
 	@echo ... symbol_table.i
 	@echo ... symbol_table.s

@@ -76,16 +76,28 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="C:/Users/Marina/CLionProjects/assembler/assembler.c">
+			<Option target="assembler"/>
+		</Unit>
+		<Unit filename="C:/Users/Marina/CLionProjects/assembler/commands.c">
+			<Option target="assembler"/>
+		</Unit>
+		<Unit filename="C:/Users/Marina/CLionProjects/assembler/commands.h">
+			<Option target="assembler"/>
+		</Unit>
 		<Unit filename="C:/Users/Marina/CLionProjects/assembler/common.h">
 			<Option target="assembler"/>
 		</Unit>
-		<Unit filename="C:/Users/Marina/CLionProjects/assembler/first_scan.c">
+		<Unit filename="C:/Users/Marina/CLionProjects/assembler/data_block.c">
 			<Option target="assembler"/>
 		</Unit>
-		<Unit filename="C:/Users/Marina/CLionProjects/assembler/main.c">
+		<Unit filename="C:/Users/Marina/CLionProjects/assembler/data_block.h">
 			<Option target="assembler"/>
 		</Unit>
-		<Unit filename="C:/Users/Marina/CLionProjects/assembler/second_scan.c">
+		<Unit filename="C:/Users/Marina/CLionProjects/assembler/file_scan.c">
+			<Option target="assembler"/>
+		</Unit>
+		<Unit filename="C:/Users/Marina/CLionProjects/assembler/file_scan.h">
 			<Option target="assembler"/>
 		</Unit>
 		<Unit filename="C:/Users/Marina/CLionProjects/assembler/symbol_table.c">

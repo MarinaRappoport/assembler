@@ -1,27 +1,29 @@
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include "common.h"
 #include "symbol_table.h"
 #include "commands.h"
 #include "data_block.h"
 #include "utils.h"
+#include "file_scan.h"
+
+/*File contains methods to scan the input as file: first scan and second scan*/
 
 #define MAX_ROW_LENGTH 81 /* 80 + 1 for \n*/
-char label[MAX_LABEL_SIZE];
-//int has_label = 0;
-//#define BUFF_SIZE 80
-//char buf[BUFF_SIZE];
 #define COMMENT_START ';'
 #define GUIDELINE_START '.'
 #define LABEL_END ':'
+char label[MAX_LABEL_SIZE];
 int row_number = 0;
+char *row; /*to read one row*/
+char *token; /*to get part of the row split by space*/
+Command command;
 
+/*function prototype*/
 int is_label_valid(char *token);
 
-/*replace tabs by spaces*/
+/* helper method: replace tabs by spaces*/
 void replace_tabs_by_spaces(char *s) {
     char *i = s;
     while (*i != 0) {
@@ -30,40 +32,51 @@ void replace_tabs_by_spaces(char *s) {
     }
 }
 
-/*parse and handle guideline - entry, extern, string, data, struct
+/*helper method: parse and handle guideline - entry, extern, string, data, struct
  in case of error - return 1, if no errors - 0*/
 int handle_guideline(int *DC, char *token) {
     int is_error = FALSE;
-    token++; /*skip '.'*/
     if (strcmp(token, ENTRY) == 0) { /*ignore*/
         if (strlen(label)) fprintf(stderr, "Warning: ignore label before ENTRY, row %d", row_number);
     } else if (strcmp(token, EXTERN) == 0) {
         if (strlen(label)) fprintf(stderr, "Warning: ignore label before EXTERN, row %d", row_number);
         token = strtok(NULL, SPACE_DELIM);
         if (is_label_valid(token)) {
-            add_to_symbol_table(token, 0, TRUE, FALSE);
+            if (add_to_symbol_table(token, 0, TRUE, FALSE)) {
+                fprintf(stderr, "Duplicate label \"%s\", row %d\n", token, row_number);
+                is_error = TRUE;
+            };
         } else {
-            printf("Invalid EXTERN label, row %d\n", row_number);
+            fprintf(stderr, "Invalid EXTERN label, row %d\n", row_number);
             is_error = TRUE;
         }
         token = strtok(NULL, SPACE_DELIM);
         if (token && !is_empty(token)) {
-            printf("Additional data after EXTERN label, row %d\n", row_number);
+            fprintf(stderr, "Additional data after EXTERN label, row %d\n", row_number);
             is_error = TRUE;
         }
     } else if (strcmp(token, STRING) == 0) {
         /*take rest*/
-        token = strtok(NULL, "");
+        token = strtok(NULL, EMPTY_DELIM);
+        /*if label not empty - add to symbol table*/
+        if (strlen(label)) {
+            if (add_to_symbol_table(label, *DC, FALSE, FALSE)) {
+                fprintf(stderr, "Duplicate label \"%s\", row %d\n", label, row_number);
+                is_error = TRUE;
+            }
+        }
         if (!token || add_string_to_memory(token, DC)) {
             is_error = TRUE;
-            fprintf(stderr, "Failed to insert string to memory - %s, row number - %d \n", token, row_number);
-        } else {
-            /*if label not empty - add to symbol table*/
-            if (strlen(label)) add_to_symbol_table(label, *DC, FALSE, FALSE);
+            fprintf(stderr, "Failed to insert string to memory - %s, row %d\n", token, row_number);
         }
     } else if (strcmp(token, DATA) == 0) {
         /*if label not empty - add to symbol table*/
-        if (strlen(label)) add_to_symbol_table(label, *DC, FALSE, FALSE);
+        if (strlen(label)) {
+            if (add_to_symbol_table(label, *DC, FALSE, FALSE)) {
+                fprintf(stderr, "Duplicate label \"%s\", row %d\n", label, row_number);
+                is_error = TRUE;
+            }
+        }
         /* split all the numbers by ','*/
         token = strtok(NULL, COMMA_DELIM);
         /* go over the numbers and add them to the data memory block */
@@ -81,7 +94,12 @@ int handle_guideline(int *DC, char *token) {
         }
     } else if (strcmp(token, STRUCT) == 0) {
         /*if label not empty - add to symbol table*/
-        if (strlen(label)) add_to_symbol_table(label, *DC, FALSE, FALSE);
+        if (strlen(label)) {
+            if (add_to_symbol_table(label, *DC, FALSE, FALSE)) {
+                fprintf(stderr, "Duplicate label \"%s\", row %d\n", label, row_number);
+                is_error = TRUE;
+            }
+        }
         /* get the number part*/
         token = strtok(NULL, COMMA_DELIM);
         if (!token || add_int_to_data_memory(token, DC)) {
@@ -97,13 +115,13 @@ int handle_guideline(int *DC, char *token) {
             }
         }
     } else {
-        printf("Invalid guideline, row %d\n", row_number);
+        fprintf(stderr, "Invalid guideline, row %d\n", row_number);
         is_error = TRUE;
     }
     return is_error;
 }
 
-/*count IC analysing operands of the command*/
+/*helper method: count IC analysing operands of the command*/
 int count_IC(int *IC, char *token, int operands_num) {
     int is_error = FALSE, command_offset;
     char *src_op, *dst_op;
@@ -135,19 +153,12 @@ int count_IC(int *IC, char *token, int operands_num) {
     return is_error;
 }
 
-/*first scan of the file
+/* ------first scan of the file------------
 handle labels, count DC for guidelines and IC for commands
 in case of error return 1, if no errors - 0*/
 int first_scan(FILE *fp, int *IC, int *DC) {
     int is_error = FALSE;
-    char *row; /*to read one row*/
-    char *token; /*to get part of the row split by space*/
-    Command command;
-    row = (char *) malloc(MAX_ROW_LENGTH);
-    if (!row) {
-        fprintf(stderr, "Can not allocate memory for row: %d \n", ++row_number);
-        exit(1);
-    }
+    row = new_string(MAX_ROW_LENGTH);
 
     /*read line by line*/
     while (fgets(row, MAX_ROW_LENGTH, fp) != NULL) {
@@ -163,19 +174,19 @@ int first_scan(FILE *fp, int *IC, int *DC) {
         if (*row == COMMENT_START || *row == '\n') continue;
 
         /*replace end of line*/
-        if (row[strlen(row) - 1] == '\n') row[strlen(row) - 1] = '\0';
+        if (row[strlen(row) - 1] == '\n') row[strlen(row) - 1] = END_OF_STRING;
 
         /*take the first token*/
         token = strtok(row, SPACE_DELIM);
         /*if label*/
         if (token[strlen(token) - 1] == LABEL_END) {
             if (strlen(token) > (MAX_LABEL_SIZE + 1)) {
-                printf("Length of label should be less or equal %d, row: %d", MAX_LABEL_SIZE, row_number);
+                fprintf(stderr, "Length of label should be less or equal %d, row: %d\n", MAX_LABEL_SIZE, row_number);
                 return FALSE;
             } else {
                 /*remove ':' from the end*/
                 strncpy(label, token, strlen(token) - 1);
-                label[strlen(token) - 1] = '\0';
+                label[strlen(token) - 1] = END_OF_STRING;
                 if (is_label_valid(label)) {
                     /*take the next element of the row */
                     token = strtok(NULL, SPACE_DELIM);
@@ -190,156 +201,42 @@ int first_scan(FILE *fp, int *IC, int *DC) {
         }
         /*if guideline - starts with "."*/
         if (*token == GUIDELINE_START) {
-            is_error = handle_guideline(DC, token);
+            if (handle_guideline(DC, token)) is_error = TRUE;
         }
             /*if command*/
         else {
             command = commands_lookup(token);
-            if (command.value == NOT_FOUND) {
+            if (command.opcode == NOT_FOUND) {
                 is_error = TRUE;
                 fprintf(stderr, "Unknown command, row: %d\n", row_number);
                 continue;
             }
             /*if label not empty - add to symbol table*/
-            if (strlen(label)) add_to_symbol_table(label, *IC, FALSE, TRUE);
+            if (strlen(label)) {
+                if (add_to_symbol_table(label, *IC, FALSE, TRUE)) {
+                    fprintf(stderr, "Duplicate label \"%s\", row %d\n", label, row_number);
+                    is_error = TRUE;
+                }
+            }
             /*take the rest of the row - operands*/
-            token = strtok(NULL, "");
+            token = strtok(NULL, EMPTY_DELIM);
 
-            is_error = count_IC(IC, token, command.operands_num);
+            if (count_IC(IC, token, command.operands_num)) is_error = TRUE;
         }
     }
-    free(row);
     return is_error;
 }
 
-//    /*char c;
-//    while ((c = getc(fp)) != EOF) {
-//        if (c == ' ' || c == '\t') {
-//            switch (pos) {
-//                case NEW_LINE:
-//                    /*skip empty line*/
-//                    if (i > 0) {
-//                        pos = COMMAND;
-//                        buf[i] = '\0'; /*end of string*/
-//                        if (commands_lookup(buf) == -1) {
-//                            /*error - unknown command*/
-//                        } else {
-//                            /*TODO count the place for the command*/
-//                            IC++;
-//                            if (has_label) {
-//                                add_to_symbol_table(&head, buf, IC, FALSE, TRUE);
-//                            }
-//                        }
-//                    }
-//                    break;
-//                case GUIDELINE:
-//                    buf[i] = '\0'; /*end of string*/
-//                    /*ignore label for extern and entry*/
-//                    if (strcmp(buf, ENTRY) == 0) {
-//                        /*skip for first run*/
-//                    } else if (strcmp(buf, EXTERNAL) == 0) {
-//                        pos = EXTERN;
-//                    } else if (strcmp(buf, DATA) == 0) {
-//
-//                    } else if (strcmp(buf, STRING) == 0) {
-//
-//                    } else if (strcmp(buf, STRUCTURE) == 0) {
-//
-//                    } else {
-//                        /*error*/
-//                    }
-//                case EXTERN:
-//                    is_label_valid(buf, i);
-//                    add_to_symbol_table(&head, buf, 0, TRUE, FALSE);
-//                default:
-//                    break;
-//            }
-//        } else if (c == '\n') {
-//            pos = NEW_LINE;
-//            has_label = 0;
-//            /*clear buffer*/
-//            i = 0;
-//            memset(&buf[0], 0, sizeof(buf));
-//        } else if (c == ';') {
-//            if (pos == NEW_LINE) {
-//                while ((c = getc(fp)) != EOF || c != '\n');
-//                /*skip comment*/
-//            }
-//        } else if (c == '.') {
-//            /*extern, entry, string, data or struct*/
-//            switch (pos) {
-//                case NEW_LINE:
-//                    pos = GUIDELINE;
-//                    break;
-//                default:
-//                    /*error*/
-//                    break;
-//            }
-//        } else if (c == ':') {
-//            switch (pos) {
-//                case NEW_LINE:
-//                    /*it's label*/
-//                    if (has_label) {
-//                        /*error - second label in the line*/
-//                    }
-//                    has_label = 1;
-//                    is_label_valid(buf, i);
-//                    strcpy(label, buf);
-//                    /*clear buffer*/
-//                    i = 0;
-//                    memset(&buf[0], 0, sizeof(buf));
-//                    break;
-//                default:
-//                    /*error*/
-//                    break;
-//            }
-//        } else {
-//            /*collect buffer*/
-//            if (i >= BUFF_SIZE) {
-//                printf("Too many characters in line");
-//            } else {
-//                buf[i++] = c;
-//            }
-//        }*/
-
-/*second scan of the file
-1. if empty string - ignore
-2. if comment (start with ;) - ignore
-3. if .entry - to file .ent: name(label) + address(in base 32)
-4. if .extern - ignore
-5. NOTHING to do with labels!
-6. if command - build code in binary:
-    0000   -  10 - 01 - 00
-    opcode - op1 - op2 - AER
-    ?operators: 00 - number
-                01 - variable(label)
-                10 - struct
-                11 - register
-    ?AER:	 00 - absolute
-            01 - external
-            10 - relocated
-
-    for struct: 1) address(of label)->8 bits - 10 (relocated) - because it depends on IC
-                2) number inside struct: 1 - 00000001-00, 2 - 00000010-00
-
-    for variables - check in symbol table:
-                1) if extern: 00000000-01
-                + to file .ext: name(label) + address=IC - of method it uses(in base 32)
-
+/*------second scan of the file------------
+write entry and external file,
+prepare instructions array in machine code view
 in case of error return 1, if no errors - 0*/
 int second_scan(FILE *fp) {
-    machine_command machine_rowm, empty = {0}; /* to reset all values*/
-    Symbol *sym;
     int is_error = FALSE;
-    char *row; /*to read one row*/
-    char *token; /*to get part of the row split by space*/
-    Command command;
+    Symbol *sym;
     row_number = 0;
-    row = (char *) malloc(MAX_ROW_LENGTH);
-    if (!row) {
-        fprintf(stderr, "Can not allocate memory for row: %d \n", ++row_number);
-        exit(1);
-    }
+    row = new_string(MAX_ROW_LENGTH);
+    reset_instruction_array_counter();
 
     /*read line by line*/
     while (fgets(row, MAX_ROW_LENGTH, fp) != NULL) {
@@ -352,86 +249,75 @@ int second_scan(FILE *fp) {
         if (*row == COMMENT_START || *row == '\n') continue;
 
         /*replace end of line*/
-        if (row[strlen(row) - 1] == '\n') row[strlen(row) - 1] = '\0';
+        if (row[strlen(row) - 1] == '\n') row[strlen(row) - 1] = END_OF_STRING;
 
         /*take the first token*/
         token = strtok(row, SPACE_DELIM);
 
         /* nothing to do with label - get next element*/
         if (token[strlen(token) - 1] == LABEL_END) token = strtok(NULL, SPACE_DELIM);
-        /*if guideline - starts with "."*/
+        /*if guideline - starts with "." - need to handle only ENTRY*/
         if (*token == GUIDELINE_START) {
             if (strcmp(token, ENTRY) == 0) {
                 /*find in symbol table*/
-                token = strtok(row, SPACE_DELIM);
+                token = strtok(NULL, SPACE_DELIM);
                 sym = find_symbol(token);
                 if (!sym) {
                     fprintf(stderr, "The label \"%s\" was not declared, row %d \n", token, row_number);
                     is_error = TRUE;
                     continue;
+                } else {
+                    if (sym->is_extern) {
+                        fprintf(stderr, "Error label name \"%s\" is external and can't be entry, row %d\n", token,
+                                row_number);
+                    } else {
+                        write_to_entry_file(sym->name, sym->address);
+                    }
                 }
-
-
-            } else if (strcmp(token, ENTRY) == 0) {
-
-            } else if (strcmp(token, ENTRY) == 0) {
-
-            } else if (strcmp(token, ENTRY) == 0) {
-
-            } else if (strcmp(token, ENTRY) == 0) {
-
             }
+            /*if it is command*/
+        } else {
+            command = commands_lookup(token);
+            /*take the rest of the row - operands*/
+            token = strtok(NULL, EMPTY_DELIM);
+            if (add_instruction_to_array(command.opcode, command.operands_num, token)) is_error = TRUE;
         }
-
     }
-
     return is_error;
 }
 
-
-/*check is the label valid: start with letter, contains only number and letters*/
+/*helper method: check is the label valid: start with letter, contains only number and letters*/
 int is_label_valid(char *token) {
+    Command com;
+
     /*should start with letter, contains only letters(65-90,97-122) or digits(48-57), length not more that 30*/
     char *c = token;
     if (!strlen(token)) {
-        printf("Label can't be empty, row: %d", row_number);
+        fprintf(stderr, "Label can't be empty, row: %d\n", row_number);
         return FALSE;
     }
+
+    if (strlen(token) > (MAX_LABEL_SIZE + 1)) {
+        fprintf(stderr, "Length of label should be less or equal %d, row: %d\n", MAX_LABEL_SIZE, row_number);
+        return FALSE;
+    }
+
     if (!(*c >= 65 && *c <= 90) && !(*c >= 97 && *c <= 122)) {
-        fprintf(stderr, "Label should start with letter, row: %d", row_number);
+        fprintf(stderr, "Label should start with letter, row: %d\n", row_number);
         return FALSE;
     }
     while (*c) {
         if (!(*c >= 65 && *c <= 90) && !(*c >= 97 && *c <= 122) && !(*c >= 48 && *c <= 57)) {
-            fprintf(stderr, "Label should contain only letters and numbers, row: %d", row_number);
+            fprintf(stderr, "Label should contain only letters and numbers, row: %d\n", row_number);
             return FALSE;
         }
         c++;
     }
-    //TODO check reserved words
-    if (0) {
-        printf("Can not use reserved word for label, row: %d", row_number);
+    /* check reserved words */
+    com = commands_lookup(token);
+    if (com.opcode != NOT_FOUND) {
+        fprintf(stderr, "Can not use reserved word for label, row: %d\n", row_number);
         return FALSE;
     }
     return TRUE;
-}
-
-int is_label_valid_old(char *buf, int size) {
-    /*should start with letter, contains only letters(65-90,97-122) or digits(48-57), length not more that 30*/
-    int i = 0;
-    int c = buf[i];
-    if (size > 30) printf("Length of label should be less or equal 30");
-    if (!(c >= 65 && c <= 90) && !(c >= 97 && c <= 122)) {
-        fprintf(stderr, "Label should start with letter");
-    }
-    while (i++ < size) {
-        if (!(c >= 65 && c <= 90) && !(c >= 97 && c <= 122) && !(c >= 48 && c <= 57)) {
-            fprintf(stderr, "Label should contain only letters and numbers");
-        }
-    }
-    //TODO check reserved words
-    if (0) {
-        printf("Can not use reserved word for label");
-    }
-    buf[size] = '\0'; /*end of string*/
 }
