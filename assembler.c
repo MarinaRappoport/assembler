@@ -23,14 +23,14 @@ int main(int argc, char *argv[]) {
     /*if not enough arguments - error message and not compile*/
     if (argc < 2) {
         printf("Usage: assembler as_file1 ...");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     /*for each input file*/
     while (--argc > 0) {
         is_error = FALSE;
         ++argv;
-        filename = (char *) malloc(strlen(*argv) + strlen(AS_FILE_EXT) + 1);
+        filename = new_string(strlen(*argv) + strlen(AS_FILE_EXT));
         strcpy(filename, *argv);
 
         /*save filename without extension*/
@@ -76,13 +76,14 @@ int main(int argc, char *argv[]) {
         close_output_files();
         free_symbol_table();
 
-        /* in case of error delete all the output files*/
+        /* in case of error try to delete all the output files*/
         if (is_error) {
             fprintf(stderr, "No output files should be created because of errors in assembly file %s\n", filename);
             delete_output_files();
         } else {
             printf("Compiling is finished successfully: %s\n", filename);
         }
+        free(filename);
     }
     return EXIT_SUCCESS;
 }

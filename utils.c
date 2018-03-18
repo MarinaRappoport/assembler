@@ -35,14 +35,18 @@ int is_empty(const char *s) {
     return 1;
 }
 
-/* open file with certain extension for writing */
-FILE *open_file_for_write(char const *ext) {
+/*build full filename for output file: name + extension*/
+char *get_full_file_name(const char *ext) {
     char *full_filename = new_string(strlen(output_filename) + strlen(ext));
     strcpy(full_filename, output_filename);
     strcat(full_filename, ext);
+    return full_filename;
+}
 
+/* open file with certain extension for writing */
+FILE *open_file_for_write(char const *ext) {
     /*Open the file for writing*/
-    return fopen(full_filename, "w+");
+    return fopen(get_full_file_name(ext), "w+");
 }
 
 /*function encodes decimal to base 32*/
@@ -71,8 +75,7 @@ char *dec_to_base32(int n, int num_sign) {
 
 /* save filename for all output files */
 void save_file_name(char *fileName) {
-    if (output_filename) output_filename = realloc(output_filename, strlen(fileName) + 1);
-    else output_filename = malloc(strlen(fileName) + 1);
+    output_filename = new_string(strlen(fileName));
     strcpy(output_filename, fileName);
 }
 
@@ -114,13 +117,21 @@ void close_output_files() {
     external_fp = NULL;
     if (object_fp)fclose(object_fp);
     object_fp = NULL;
+    free(output_filename);
+}
+
+/* delete output files with specific extension*/
+void delete_output_file(char *ext) {
+    char *full_name = get_full_file_name(ext);
+    if (!remove(full_name)) fprintf(stderr, "Can't delete file %s\n", full_name);
+    free(full_name);
 }
 
 /* delete all output files*/
-void delete_output_files(){
-    remove(strcat(output_filename,ENTRY_FILE_EXT));
-    remove(strcat(output_filename,EXTERN_FILE_EXT));
-    remove(strcat(output_filename,OBJECT_FILE_EXT));
+void delete_output_files() {
+    delete_output_file(ENTRY_FILE_EXT);
+    delete_output_file(EXTERN_FILE_EXT);
+    delete_output_file(OBJECT_FILE_EXT);
 }
 
 

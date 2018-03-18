@@ -16,7 +16,8 @@
 #define LABEL_END ':'
 char label[MAX_LABEL_SIZE];
 int row_number = 0;
-char *row; /*to read one row*/
+char row_temp[MAX_ROW_LENGTH];
+char *row; /* pointer to read the row*/
 char *token; /*to get part of the row split by space*/
 Command command;
 
@@ -158,15 +159,15 @@ handle labels, count DC for guidelines and IC for commands
 in case of error return 1, if no errors - 0*/
 int first_scan(FILE *fp, int *IC, int *DC) {
     int is_error = FALSE;
-    row = new_string(MAX_ROW_LENGTH);
 
     /*read line by line*/
-    while (fgets(row, MAX_ROW_LENGTH, fp) != NULL) {
+    while (fgets(row_temp, MAX_ROW_LENGTH, fp) != NULL) {
         row_number++;
+        row = row_temp;
+        replace_tabs_by_spaces(row);
+
         /*clear label*/
         memset(label, '\0', sizeof(label));
-
-        replace_tabs_by_spaces(row);
 
         /* skip spaces in the beginning*/
         while (*row == SPACE_DELIM[0]) row++;
@@ -235,12 +236,12 @@ int second_scan(FILE *fp) {
     int is_error = FALSE;
     Symbol *sym;
     row_number = 0;
-    row = new_string(MAX_ROW_LENGTH);
     reset_instruction_array_counter();
 
     /*read line by line*/
-    while (fgets(row, MAX_ROW_LENGTH, fp) != NULL) {
+    while (fgets(row_temp, MAX_ROW_LENGTH, fp) != NULL) {
         row_number++;
+        row = row_temp;
         replace_tabs_by_spaces(row);
 
         /* skip spaces in the beginning*/
